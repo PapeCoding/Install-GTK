@@ -57,5 +57,5 @@ runs:
         if(!(Test-Path ./gtk.zip)){
         	Invoke-WebRequest -OutFile gtk.zip ${{env.WINDOWS_GVS_DOWNLOAD}}
         }
-        (Expand-Archive -Path gtk.zip -DestinationPath "C:\gtk4") -and (rm .\gtk.zip)
+        (Expand-Archive -Path gtk.zip -DestinationPath "C:\gtk") -and (rm .\gtk.zip)
         echo "C:\gtk\bin;" >> $Env:GITHUB_PATH
