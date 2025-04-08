@@ -43,7 +43,7 @@ runs:
         } \
         if($download){ \
         	(Invoke-WebRequest -OutFile gtk.zip $download) -and (Expand-Archive -Path gtk.zip -DestinationPath "C:\gtk4") -and (rm .\gtk.zip) \
-          $Env:PATH += "C:\gtk\bin;" \
+                $Env:PATH += "C:\gtk\bin;" \
         } else { \
         	echo "Could not find matching file" \
         } \
