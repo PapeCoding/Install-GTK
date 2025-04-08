@@ -1,6 +1,6 @@
-name: 'Ensure GTK4'
+name: 'Install GTK'
 author: 'Sebastian Pape'
-description: 'This will add GVSBuild to the path on Windows and install the packages on MacOS and Linux'
+description: 'This will add GVSBuild to the path on Windows and install the requested packages GTK on MacOS and Linux. Uses caching for GVSBuild download.'
 branding:
   icon: 'package'
   color: 'blue'
