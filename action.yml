@@ -40,7 +40,7 @@ runs:
       run: |
         (Invoke-RestMethod -Uri https://api.github.com/repos/wingtk/gvsbuild/releases/${{ inputs.windows-release }} -ContentType "application/json").assets | foreach {
         	if( $_.name -like "${{ inputs.windows-gtk-version }}" ){
-             echo "WINDOWS_GVS_DOWNLOAD=$_.browser_download_url" >> $Env:GITHUB_ENV
+             echo "WINDOWS_GVS_DOWNLOAD=$($_.browser_download_url)" >> $Env:GITHUB_ENV
              exit 0
           }
         }
