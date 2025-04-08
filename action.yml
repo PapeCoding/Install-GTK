@@ -34,16 +34,28 @@ runs:
       if: runner.os == 'macOS'
       shell: bash
       run: brew install ${{ inputs.macos-release }}
-    - name: 'Download, Extract and Add to Path Windows'
+    - name: 'Determine Windows Release'
       if: runner.os == 'Windows'
       shell: powershell
       run: |
         (Invoke-RestMethod -Uri https://api.github.com/repos/wingtk/gvsbuild/releases/${{ inputs.windows-release }} -ContentType "application/json").assets | foreach {
-        	if( $_.name -like "${{ inputs.windows-gtk-version }}" ){$download = $_.browser_download_url}
+        	if( $_.name -like "${{ inputs.windows-gtk-version }}" ){
+             echo "WINDOWS_GVS_DOWNLOAD=$_.browser_download_url" >> $Env:GITHUB_ENV
+             exit 0
+          }
         }
-        if($download){
-        	(Invoke-WebRequest -OutFile gtk.zip $download) -and (Expand-Archive -Path gtk.zip -DestinationPath "C:\gtk4") -and (rm .\gtk.zip)
-        	$Env:PATH += "C:\gtk\bin;"
-        } else {
-        	echo "Could not find matching file"
+        exit 1
+    - uses: actions/cache@v4
+      if: runner.os == 'Windows'
+      with:
+        key: ${{ env.WINDOWS_GVS_DOWNLOAD }}
+        path: ./gtk.zip
+    - name: 'Download, Extract and Add to Path Windows'
+      if: runner.os == 'Windows'
+      shell: powershell
+      run: |
+        if(!(Test-Path ./gtk.zip)){
+        	Invoke-WebRequest -OutFile gtk.zip ${{env.WINDOWS_GVS_DOWNLOAD}}
         }
+        (Expand-Archive -Path gtk.zip -DestinationPath "C:\gtk4") -and (rm .\gtk.zip)
+        $Env:PATH += "C:\gtk\bin;"
