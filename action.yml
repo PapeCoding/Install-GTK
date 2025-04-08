@@ -45,17 +45,19 @@ runs:
           }
         }
         exit 1
-    - uses: actions/cache@v4
+    - name: Cache GVSBuild
+      id: cache-gvs
+      uses: actions/cache@v4
       if: runner.os == 'Windows'
       with:
         key: ${{ env.WINDOWS_GVS_DOWNLOAD }}
-        path: ./gtk.zip
+        path: C:/gtk
     - name: 'Download, Extract and Add to Path Windows'
       if: runner.os == 'Windows'
       shell: powershell
       run: |
-        if(!(Test-Path ./gtk.zip)){
+        if( ${{steps.cache-gvs.outputs.cache-hit}} != 'true'){
         	Invoke-WebRequest -OutFile gtk.zip ${{env.WINDOWS_GVS_DOWNLOAD}}
+          (Expand-Archive -Path gtk.zip -DestinationPath "C:\gtk") -and (rm .\gtk.zip)
         }
-        (Expand-Archive -Path gtk.zip -DestinationPath "C:\gtk") -and (rm .\gtk.zip)
         echo "C:\gtk\bin;" >> $Env:GITHUB_PATH
