@@ -1,0 +1,17 @@
+name: Test for all platforms
+on:
+  push:
+  pull_request:
+  workflow_dispatch: 
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Add GTK to Runner
+        uses: ./
