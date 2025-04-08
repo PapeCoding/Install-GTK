@@ -13,5 +13,9 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
+      - name: Checkout the actions file
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: .
       - name: Add GTK to Runner
         uses: ./
