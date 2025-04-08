@@ -27,15 +27,15 @@ runs:
   using: "composite"
   steps:
     - name: 'Install Package in Linux'
-      if: $RUNNER_OS == 'Linux'
+      if: ${{ runner.os }} == 'Linux'
       shell: bash
       run: sudo apt install -y ${{ inputs.linux-release }}
     - name: 'Install Package in MacOS'
-      if: $RUNNER_OS == 'macOS'
+      if: ${{ runner.os }} == 'macOS'
       shell: bash
       run: brew install ${{ inputs.macos-release }}
     - name: 'Download, Extract and Add to Path Windows'
-      if: $RUNNER_OS == 'Windows'
+      if: ${{ runner.os }} == 'Windows'
       shell: powershell
       run: |
         (Invoke-RestMethod -Uri https://api.github.com/repos/wingtk/gvsbuild/releases/${{ inputs.windows-release }} -ContentType "application/json").assets | foreach { \
