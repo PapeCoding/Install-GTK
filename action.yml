@@ -56,7 +56,7 @@ runs:
       if: runner.os == 'Windows'
       shell: powershell
       run: |
-        if( ${{steps.cache-gvs.outputs.cache-hit}} != 'true'){
+        if( "${{steps.cache-gvs.outputs.cache-hit}}" -ne 'true'){
         	Invoke-WebRequest -OutFile gtk.zip ${{env.WINDOWS_GVS_DOWNLOAD}}
           (Expand-Archive -Path gtk.zip -DestinationPath "C:\gtk") -and (rm .\gtk.zip)
         }
