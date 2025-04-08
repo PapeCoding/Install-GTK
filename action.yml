@@ -29,7 +29,7 @@ runs:
     - name: 'Install Package in Linux'
       if: runner.os == 'Linux'
       shell: bash
-      run: sudo apt install -y ${{ inputs.linux-release }}
+      run: sudo apt update && sudo apt install -y ${{ inputs.linux-release }}
     - name: 'Install Package in MacOS'
       if: runner.os == 'macOS'
       shell: bash
@@ -39,7 +39,7 @@ runs:
       shell: powershell
       run: |
         (Invoke-RestMethod -Uri https://api.github.com/repos/wingtk/gvsbuild/releases/${{ inputs.windows-release }} -ContentType "application/json").assets | foreach { \
-        	if($_.name -like ${{ inputs.windows-gtk-version }}){$download = $_.browser_download_url} \
+        	if( $_.name -like "${{ inputs.windows-gtk-version }}" ){$download = $_.browser_download_url} \
         } \
         if($download){ \
         	(Invoke-WebRequest -OutFile gtk.zip $download) -and (Expand-Archive -Path gtk.zip -DestinationPath "C:\gtk4") -and (rm .\gtk.zip) \
