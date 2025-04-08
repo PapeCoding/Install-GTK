@@ -1,0 +1,49 @@
+name: 'Ensure GTK4'
+author: 'Sebastian Pape'
+description: 'This will add GVSBuild to the path on Windows and install the packages on MacOS and Linux'
+branding:
+  icon: 'package'
+  color: 'blue'
+
+inputs:
+  windows-release:
+    description: 'Release Tag. Either "latest" or e.g. "tags/2025.4.0"'
+    required: true
+    default: 'latest'
+  windows-gtk-version:
+    description: 'Wildcard used to match filenames, but can be used to switch to eg. GTK3'
+    required: true
+    default: 'GTK4*.zip'
+  linux-release:
+    description: 'APT-Package Name for Ubuntu'
+    required: true
+    default: 'libgtk-4-dev'
+  macos-release:
+    description: 'Homebrew-Package Name for MacOS'
+    required: true
+    default: 'gtk4'
+  
+runs:
+  using: "composite"
+  steps:
+    - name: 'Install Package in Linux'
+      if: $RUNNER_OS == 'Linux'
+      shell: bash
+      run: sudo apt install -y ${{ linux-release }}
+    - name: 'Install Package in MacOS'
+      if: $RUNNER_OS == 'macOS'
+      shell: bash
+      run: brew install ${{ macos-release }}
+    - name: 'Download, Extract and Add to Path Windows'
+      if: $RUNNER_OS == 'Windows'
+      shell: powershell
+      run: |
+        (Invoke-RestMethod -Uri https://api.github.com/repos/wingtk/gvsbuild/releases/$release -ContentType "application/json").assets | foreach { \
+        	if($_.name -like $myWildCard){$download = $_.browser_download_url} \
+        } \
+        if($download){ \
+        	(Invoke-WebRequest -OutFile gtk.zip $download) -and (Expand-Archive -Path gtk.zip -DestinationPath "C:\gtk4") -and (rm .\gtk.zip) \
+          $Env:PATH += "C:\gtk\bin;" \
+        } else { \
+        	echo "Could not find matching file" \
+        } \
