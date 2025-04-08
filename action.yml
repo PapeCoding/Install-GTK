@@ -38,12 +38,12 @@ runs:
       if: runner.os == 'Windows'
       shell: powershell
       run: |
-        (Invoke-RestMethod -Uri https://api.github.com/repos/wingtk/gvsbuild/releases/${{ inputs.windows-release }} -ContentType "application/json").assets | foreach {
-        	if( $_.name -like "${{ inputs.windows-gtk-version }}" ){$download = $_.browser_download_url}
-        }
+        (Invoke-RestMethod -Uri https://api.github.com/repos/wingtk/gvsbuild/releases/${{ inputs.windows-release }} -ContentType "application/json").assets | foreach { \
+        	if( $_.name -like "${{ inputs.windows-gtk-version }}" ){$download = $_.browser_download_url} \
+        } \
         if($download){
         	(Invoke-WebRequest -OutFile gtk.zip $download) -and (Expand-Archive -Path gtk.zip -DestinationPath "C:\gtk4") -and (rm .\gtk.zip)
-                $Env:PATH += "C:\gtk\bin;"
+        	$Env:PATH += "C:\gtk\bin;"
         } else {
         	echo "Could not find matching file"
         }
